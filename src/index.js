@@ -8,10 +8,10 @@ import thunk from 'redux-thunk';
 
 import './index.css';
 import App from './App';
-import allReducers from './reducers';
+import combineReducers from './reducers';
 
 
-const store = createStore(allReducers,applyMiddleware(thunk));
+const store = createStore(combineReducers,applyMiddleware(thunk));
 
 render(
     <Provider store={store}>
