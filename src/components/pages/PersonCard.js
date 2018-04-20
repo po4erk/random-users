@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-
+import './style.css'
 
 class PersonCard extends Component{
   state = {
@@ -23,7 +23,8 @@ class PersonCard extends Component{
     </div>
     return(
       <div className="person">
-        <div className="picture">{picture && picture.large ? <img src={picture.large} alt={'photos'} /> : ''}</div>
+        <hr/>
+        <div className="picture"><img src={picture.large} alt={'photos'}/></div>
         <h2 className="name">{name.first} {name.last}</h2>
         <button onClick={this.handleClick}>Show More</button>
         {aboutPerson}
