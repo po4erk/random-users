@@ -22,6 +22,34 @@ img{
     padding: 20px 0 20px 0;
 }
 
-.personCard h2{
+.personCard h2,
+.personList h2{
     text-transform: capitalize;
+}
+
+.personsList{
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 1280px;
+}
+
+.personsList .personList{
+    width: 700px;
+    height: 150px;
+    margin: 10px auto;
+    text-align: center;
+}
+
+.personsList .detailsWrapper{
+    display: inline-block;
+    width: 80%;
+}
+.personsList .picture{
+    display: inline-block;
+    width: 20%;
+    text-align: center;
+}
+
+.detailsWrapper .details{
+    padding-bottom: 15px;
 }

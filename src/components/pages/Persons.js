@@ -2,15 +2,21 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import getPersons from '../../actions/PersonActions';
 import {bindActionCreators} from 'redux';
+import RaisedButton from 'material-ui/RaisedButton';
+import {List} from 'material-ui/List';
+import Subheader from 'material-ui/Subheader';
+import {Card} from 'material-ui/Card';
+
 
 import PersonCard from './PersonCard';
 import PersonList from './PersonList';
 
-class PersonsList extends Component{
+class Persons extends Component{
 
   state = {
     isShowCards: true,
-    isShowList: false
+    isShowList: false,
+    name: 'Cards'
   }
 
   componentDidMount(){
@@ -26,6 +32,7 @@ class PersonsList extends Component{
     const {getPersons, persons} = this.props,
           documentHeight = document.body.scrollHeight,
           scrollHeight = window.pageYOffset + 920;
+          console.log(scrollHeight,documentHeight)
     if( scrollHeight >= documentHeight) getPersons(persons);
   };
 
@@ -34,7 +41,8 @@ class PersonsList extends Component{
     if(isShowCards){
       this.setState({
         isShowCards: !isShowCards,
-        isShowList: !isShowList
+        isShowList: !isShowList,
+        name: 'List'
       })
     }
   };
@@ -44,7 +52,8 @@ class PersonsList extends Component{
     if(isShowList){
       this.setState({
         isShowCards: !isShowCards,
-        isShowList: !isShowList
+        isShowList: !isShowList,
+        name: 'Cards'
       })
     }
   };
@@ -55,15 +64,22 @@ class PersonsList extends Component{
           personsLists = persons.map((persons,index) => <PersonList key={index} data={persons}/>),
           personCards = this.state.isShowCards && <div className="personsCards">{personsCards}</div>,
           personLists = this.state.isShowList && <div className="personsList">{personsLists}</div>;
+    const styleCard = {
+      textAlign: 'center',
+      display: 'flex',
+      flexWrap: 'wrap'
+    };
 
     return(
         <div className="personsWrapper">
           <div className="personsButtons">
-            <button onClick={this.toggleCards}>Show List</button>
-            <button onClick={this.toggleList}>Show Cards</button>
+            <RaisedButton onClick={this.toggleCards} label='Show List'/>
+            <RaisedButton onClick={this.toggleList} label='Show Cards'/>
           </div>
-          {personCards}
-          {personLists}
+
+          <Subheader>Persons {this.state.name}</Subheader>
+          <Card style={styleCard}>{personCards}</Card>
+          <Card><List>{personLists}</List></Card>
         </div>
     )
   }
@@ -78,4 +94,4 @@ function mapDispatchToProps(dispatch){
     getPersons: getPersons
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(PersonsList);
+export default connect(mapStateToProps, mapDispatchToProps)(Persons);
