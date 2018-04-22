@@ -1,22 +1,37 @@
 import React, { Component } from 'react';
+import styled from 'styled-components';
+
 import {connect} from 'react-redux';
 import getPersons from '../../actions/PersonActions';
 import {bindActionCreators} from 'redux';
+
 import RaisedButton from 'material-ui/RaisedButton';
 import {List} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
 import {Card} from 'material-ui/Card';
+import RefreshIndicator from 'material-ui/RefreshIndicator';
 
 
-import PersonCard from './PersonCard';
-import PersonList from './PersonList';
+import PersonCard from '../PersonCard/PersonCard';
+import PersonList from '../PersonList/PersonList';
+
+const Buttons = styled.div`
+  padding-top: 5px;
+`;
+
+const Wrapper = styled.div`
+  background: #EEEEEE;
+  padding-bottom: 5px;
+`;
 
 class Persons extends Component{
 
   state = {
     isShowCards: true,
     isShowList: false,
-    name: 'Cards'
+    name: 'Cards',
+    primaryCards: true,
+    primaryList: false
   }
 
   componentDidMount(){
@@ -37,23 +52,27 @@ class Persons extends Component{
   };
 
   toggleCards = () => {
-    const {isShowCards,isShowList} = this.state;
+    const {isShowCards,isShowList,primaryList,primaryCards} = this.state;
     if(isShowCards){
       this.setState({
         isShowCards: !isShowCards,
         isShowList: !isShowList,
-        name: 'List'
+        name: 'List',
+        primaryList: !primaryList,
+        primaryCards: !primaryCards
       })
     }
   };
 
   toggleList = () => {
-    const {isShowCards,isShowList} = this.state;
+    const {isShowCards,isShowList,primaryList,primaryCards} = this.state;
     if(isShowList){
       this.setState({
         isShowCards: !isShowCards,
         isShowList: !isShowList,
-        name: 'Cards'
+        name: 'Cards',
+        primaryCards: !primaryCards,
+        primaryList: !primaryList
       })
     }
   };
@@ -67,20 +86,26 @@ class Persons extends Component{
     const styleCard = {
       textAlign: 'center',
       display: 'flex',
-      flexWrap: 'wrap'
+      flexWrap: 'wrap',
     };
+    const refresh = {
+        position: 'relative',
+        marginLeft: 'calc(50% - 20px)',
+        marginTop: 10,
+        marginBottom: 10,
+      };
 
     return(
-        <div className="personsWrapper">
-          <div className="personsButtons">
-            <RaisedButton onClick={this.toggleCards} label='Show List'/>
-            <RaisedButton onClick={this.toggleList} label='Show Cards'/>
-          </div>
-
+        <Wrapper>
+          <Buttons>
+            <RaisedButton onClick={this.toggleCards} label='Show List' primary={this.state.primaryList}/>
+            <RaisedButton onClick={this.toggleList} label='Show Cards' primary={this.state.primaryCards}/>
+          </Buttons>
           <Subheader>Persons {this.state.name}</Subheader>
           <Card style={styleCard}>{personCards}</Card>
           <Card><List>{personLists}</List></Card>
-        </div>
+          <RefreshIndicator size={40} top={0} left={0} status="loading" style={refresh}/>
+        </Wrapper>
     )
   }
 }
