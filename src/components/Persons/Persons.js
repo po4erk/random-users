@@ -31,7 +31,8 @@ class Persons extends Component{
     isShowList: false,
     name: 'Cards',
     primaryCards: true,
-    primaryList: false
+    primaryList: false,
+    flag: true
   }
 
   componentDidMount(){
@@ -40,15 +41,24 @@ class Persons extends Component{
   };
 
   componentWillUnmount(){
-    document.addEventListener('scroll', this.handleScroll);
+    document.removeEventListener('scroll', this.handleScroll);
   };
 
   handleScroll = () => {
     const {getPersons, persons} = this.props,
-          documentHeight = document.body.scrollHeight,
-          scrollHeight = window.pageYOffset + 920;
-          console.log(scrollHeight,documentHeight)
-    if( scrollHeight >= documentHeight) getPersons(persons);
+          documentHeight = document.body.offsetHeight,
+          scrollHeight = window.pageYOffset + 990;
+    if( scrollHeight >= documentHeight && this.state.flag ){
+      getPersons(persons);
+      this.setState({
+        flag: false
+      });
+    }else{
+      setTimeout(
+      this.setState({
+        flag: true
+      }),1);
+    } 
   };
 
   toggleCards = () => {
@@ -78,15 +88,18 @@ class Persons extends Component{
   };
 
   render(){
+    console.log(this.state.flag)
     const {persons} = this.props,
           personsCards = persons.map((persons,index) => <PersonCard key={index} data={persons}/>),
-          personsLists = persons.map((persons,index) => <PersonList key={index} data={persons}/>),
+          personsLists = persons.map((persons,index) => <List key={index}><PersonList data={persons}/></List>),
           personCards = this.state.isShowCards && <div className="personsCards">{personsCards}</div>,
           personLists = this.state.isShowList && <div className="personsList">{personsLists}</div>;
     const styleCard = {
       textAlign: 'center',
       display: 'flex',
       flexWrap: 'wrap',
+      maxWidth: 1280,
+      margin: 'auto'
     };
     const refresh = {
         position: 'relative',
@@ -96,14 +109,14 @@ class Persons extends Component{
       };
 
     return(
-        <Wrapper>
+        <Wrapper className='wrapper'>
           <Buttons>
             <RaisedButton onClick={this.toggleCards} label='Show List' primary={this.state.primaryList}/>
             <RaisedButton onClick={this.toggleList} label='Show Cards' primary={this.state.primaryCards}/>
           </Buttons>
           <Subheader>Persons {this.state.name}</Subheader>
           <Card style={styleCard}>{personCards}</Card>
-          <Card><List>{personLists}</List></Card>
+          <Card>{personLists}</Card>
           <RefreshIndicator size={40} top={0} left={0} status="loading" style={refresh}/>
         </Wrapper>
     )

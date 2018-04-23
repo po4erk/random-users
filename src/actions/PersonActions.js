@@ -1,4 +1,5 @@
 const getPersons = list => dispatch => {
+  console.log(1);
     fetch('https://randomuser.me/api/?results=12')
     .then(response => response.json())
     .then(response => {

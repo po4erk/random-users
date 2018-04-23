@@ -13,7 +13,7 @@ const Header = styled.h2`
 class PersonCard extends Component{
   render(){
     const styleItem = {
-      maxWidth: 600,
+      maxWidth: 700,
       height: 130,
       margin: 'auto',
     }
