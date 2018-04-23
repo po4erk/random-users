@@ -10,6 +10,7 @@ import {List} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
 import {Card} from 'material-ui/Card';
 import RefreshIndicator from 'material-ui/RefreshIndicator';
+import Paper from 'material-ui/Paper';
 
 import PersonCard from '../PersonCard/PersonCard';
 import PersonList from '../PersonList/PersonList';
@@ -17,8 +18,8 @@ import PersonList from '../PersonList/PersonList';
 import FontAwesomeIcon from '@fortawesome/react-fontawesome';
 import ListUl from '@fortawesome/fontawesome-free-solid/faListUl';
 import AddressCard from '@fortawesome/fontawesome-free-solid/faAddressCard';
-import Paper from 'material-ui/Paper';
 import ArrowUp from '@fortawesome/fontawesome-free-solid/faArrowUp';
+
 
 const Buttons = styled.div`
   padding-top: 5px;
@@ -54,20 +55,21 @@ class Persons extends Component{
       if (
         this.scroll.scrollHeight === this.scroll.scrollTop + this.scroll.offsetHeight
       ) {
-        this.scrolles.style.height = 300 + this.scrolles.scrollHeight + "px";
+        this.scrolles.style.height = 500 + this.scrolles.scrollHeight + "px";
         getPersons(persons);
       }
   };
 
   handleUp = () => {
     let speed = 1;
-      let up = setInterval(()=>{
+      let up = setTimeout(()=>{
         if(this.scroll.scrollTop !== 0){
           this.scroll.scrollTop = this.scroll.scrollTop-speed;
-          speed = speed + 5;
+          speed = speed + 1;
+          console.log(speed)
           this.handleUp();
         }else{
-          clearInterval(up);
+          clearTimeout(up);
         }
       },0);
   }
