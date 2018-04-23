@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import styled from 'styled-components';
 import PersonDetails from '../PersonDetails/PersonDetails';
+import ImagePalette from 'react-image-palette'
 
 import {CardActions, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
@@ -41,7 +42,9 @@ class PersonCard extends Component{
       padding: 20,
       textAlign: 'center',
       display: 'inline-block',
-      position: 'relative'
+      position: 'relative',
+      zIndex: 2,
+      borderRadius: 5
     };
     const styleAvatar = {
       boxShadow: '0px 0px 5px 0px rgba(0,0,0,0.75)'
@@ -49,12 +52,19 @@ class PersonCard extends Component{
     const {picture,name} = this.props.data;
     const aboutPerson = this.state.isOpen && <Details><PersonDetails details={this.props.data}/></Details>
     return(
-        <Paper style={stylePaper} zDepth={2}>
-          <Avatar style={styleAvatar} src={picture.large} size={120}/>
-          <Header>{name.first} {name.last}</Header>
-          <CardActions><FlatButton onClick={this.handleClick} label='Show More' primary={true}/></CardActions>
-          <CardText>{aboutPerson}</CardText>
-        </Paper>
+        
+          <ImagePalette image={picture.large} crossOrigin={false}>
+              {({ backgroundColor }) => (
+            <Paper style={stylePaper} zDepth={2}>
+              <div style={{backgroundColor, position: 'absolute', width: 250, height: 100, zIndex: -1, top: 0, left: 0, borderRadius: '5px 5px 0 0'}}></div>
+              <Avatar style={styleAvatar} src={picture.large} size={120}/>
+              <Header>{name.first} {name.last}</Header>
+              <CardActions><FlatButton onClick={this.handleClick} label='Show More' primary={true}/></CardActions>
+              <CardText>{aboutPerson}</CardText>
+            </Paper>
+          )}
+          </ImagePalette>
+        
     )
   }
 }
