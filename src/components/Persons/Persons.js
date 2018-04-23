@@ -60,9 +60,11 @@ class Persons extends Component{
   };
 
   handleUp = () => {
+    let speed = 1;
       let up = setInterval(()=>{
         if(this.scroll.scrollTop !== 0){
-          this.scroll.scrollTop = this.scroll.scrollTop-1;
+          this.scroll.scrollTop = this.scroll.scrollTop-speed;
+          speed = speed + 5;
           this.handleUp();
         }else{
           clearInterval(up);
