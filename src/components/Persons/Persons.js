@@ -6,19 +6,22 @@ import getPersons from '../../actions/PersonActions';
 import {bindActionCreators} from 'redux';
 
 import RaisedButton from 'material-ui/RaisedButton';
-import {List} from 'material-ui/List';
+import List from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
-import {Card} from 'material-ui/Card';
+import Card from 'material-ui/Card';
 import RefreshIndicator from 'material-ui/RefreshIndicator';
 import Paper from 'material-ui/Paper';
+import {Table,TableBody,TableHeader,TableHeaderColumn,TableRow} from 'material-ui/Table';
 
 import PersonCard from '../PersonCard/PersonCard';
 import PersonList from '../PersonList/PersonList';
+import PersonTable from '../PersonTable/PersonTable';
 
 import FontAwesomeIcon from '@fortawesome/react-fontawesome';
 import ListUl from '@fortawesome/fontawesome-free-solid/faListUl';
 import AddressCard from '@fortawesome/fontawesome-free-solid/faAddressCard';
 import ArrowUp from '@fortawesome/fontawesome-free-solid/faArrowUp';
+import TableFa from '@fortawesome/fontawesome-free-solid/faTable';
 
 
 const Buttons = styled.div`
@@ -34,11 +37,13 @@ const Buttons = styled.div`
 class Persons extends Component{
 
   state = {
-    isShowCards: true,
-    isShowList: false,
+    isShowCards: false,
+    isShowList: true,
+    isShowTable: false,
     name: 'Cards',
     primaryCards: true,
-    primaryList: false
+    primaryList: false,
+    primaryTable: false
   }
 
   componentDidMount(){
@@ -52,50 +57,63 @@ class Persons extends Component{
 
   handleScroll = () => {
       const {getPersons, persons} = this.props;
-      if (
-        this.scroll.scrollHeight === this.scroll.scrollTop + this.scroll.offsetHeight
-      ) {
-        this.scrolles.style.height = 500 + this.scrolles.scrollHeight + "px";
+      if(this.scroll.scrollHeight === this.scroll.scrollTop + this.scroll.offsetHeight){
+        this.scrolles.style.height = this.scrolles.scrollHeight + "px";
         getPersons(persons);
       }
   };
 
   handleUp = () => {
-    let speed = 1;
-      let up = setTimeout(()=>{
+      setTimeout(()=>{
+        let speed = 50;
         if(this.scroll.scrollTop !== 0){
           this.scroll.scrollTop = this.scroll.scrollTop-speed;
-          speed = speed + 1;
-          console.log(speed)
           this.handleUp();
-        }else{
-          clearTimeout(up);
         }
       },0);
   }
 
-  toggleCards = () => {
-    const {isShowCards,isShowList,primaryList,primaryCards} = this.state;
-    if(isShowCards){
+  showCards = () => {
+    const {isShowCards} = this.state;
+    if(!isShowCards){
       this.setState({
-        isShowCards: !isShowCards,
-        isShowList: !isShowList,
+        isShowCards: true,
+        isShowList: false,
+        isShowTable: false,
         name: 'List',
-        primaryList: !primaryList,
-        primaryCards: !primaryCards
+        primaryList: true,
+        primaryCards: false,
+        primaryTable: false
       })
     }
   };
 
-  toggleList = () => {
-    const {isShowCards,isShowList,primaryList,primaryCards} = this.state;
-    if(isShowList){
+  showList = () => {
+    const {isShowList} = this.state;
+    if(!isShowList){
       this.setState({
-        isShowCards: !isShowCards,
-        isShowList: !isShowList,
+        isShowCards: false,
+        isShowList: true,
+        isShowTable: false,
         name: 'Cards',
-        primaryCards: !primaryCards,
-        primaryList: !primaryList
+        primaryList: false,
+        primaryCards: true,
+        primaryTable: false
+      })
+    }
+  };
+
+  showTable = () => {
+    const {isShowTable} = this.state;
+    if(!isShowTable){
+      this.setState({
+        isShowCards: false,
+        isShowList: false,
+        isShowTable: true,
+        name: 'Table',
+        primaryList: false,
+        primaryCards: false,
+        primaryTable: true
       })
     }
   };
@@ -104,12 +122,30 @@ class Persons extends Component{
     const {persons} = this.props,
       personsCards = persons.map((persons,index) => <PersonCard key={index} data={persons}/>),
       personsLists = persons.map((persons,index) => <List key={index}><PersonList data={persons}/></List>),
-      personCards = this.state.isShowCards && <div className="personsCards">{personsCards}</div>,
-      personLists = this.state.isShowList && <div className="personsList">{personsLists}</div>;
+      personsTable = persons.map((persons,index) => <PersonTable key={index} data={persons}/>),
+      personCards = this.state.isShowList && <div className="personsCards">{personsCards}</div>,
+      personLists = this.state.isShowCards && <div className="personsList">{personsLists}</div>,
+      personTable = this.state.isShowTable && 
+      <Table>
+        <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
+            <TableRow>
+                <TableHeaderColumn>Name</TableHeaderColumn>
+                <TableHeaderColumn>Email</TableHeaderColumn>
+                <TableHeaderColumn>Birthday</TableHeaderColumn>
+                <TableHeaderColumn>Address</TableHeaderColumn>
+                <TableHeaderColumn>Phone</TableHeaderColumn>
+            </TableRow>
+        </TableHeader>
+        <TableBody>{personsTable}</TableBody>
+      </Table>;
     const styleCard = {
       textAlign: 'center',
       display: 'flex',
       flexWrap: 'wrap',
+      maxWidth: 1280,
+      margin: 'auto'
+    };
+    const styleTable = {
       maxWidth: 1280,
       margin: 'auto'
     };
@@ -123,13 +159,13 @@ class Persons extends Component{
       background: '#EEEEEE',
       paddingBottom: 5,
       overflowY: "scroll",
-      height: '100vh'
+      height: '92vh'
     };
     const up = {
       width: 40,
       height: 40,
       paddingTop: 10,
-      background: '#5E35B1',
+      background: '#43B8D2',
       position: 'fixed',
       top: 80,
       left: 5,
@@ -140,21 +176,26 @@ class Persons extends Component{
         <div ref={div => (this.scroll = div)} style={wrapper}>
           <div ref={el => (this.scrolles = el)}>
             <Buttons>
-              <RaisedButton onClick={this.toggleCards} primary={this.state.primaryList}>
+              <RaisedButton onClick={this.showCards} primary={this.state.primaryList}>
                 <FontAwesomeIcon icon={ListUl}/>
               </RaisedButton>
-              <RaisedButton onClick={this.toggleList} primary={this.state.primaryCards}>
+              <RaisedButton onClick={this.showList} primary={this.state.primaryCards}>
                 <FontAwesomeIcon icon={AddressCard}/>
+              </RaisedButton>
+              <RaisedButton onClick={this.showTable} primary={this.state.primaryTable}>
+                <FontAwesomeIcon icon={TableFa}/>
               </RaisedButton>
             </Buttons>
             <Subheader>Persons {this.state.name}</Subheader>
+
             <Card style={styleCard}>{personCards}</Card>
             <Card>{personLists}</Card>
-            <RefreshIndicator size={40} top={0} left={0} status="loading" style={refresh}/>
+            <Card style={styleTable}>{personTable}</Card>
 
             <Paper onClick={this.handleUp} style={up} zDepth={1} circle={true}>
               <FontAwesomeIcon icon={ArrowUp}/>
             </Paper>
+            <RefreshIndicator size={40} top={0} left={0} status="loading" style={refresh}/>
           </div>
         </div>
     )

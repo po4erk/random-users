@@ -1,5 +1,5 @@
 const getPersons = list => dispatch => {
-    fetch('https://randomuser.me/api/?results=12')
+    fetch('https://randomuser.me/api/?results=18')
     .then(response => response.json())
     .then(response => {
       dispatch({
